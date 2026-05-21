@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AI Universe • Notifications</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f3ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
+    .page-container {
+      max-width: 480px;
+      width: 100%;
+      height: 90vh;
+      background: #ffffff;
+      border-radius: 44px;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.08), 0 10px 25px rgba(102, 51, 153, 0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 10px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(168, 126, 255, 0.1);
+      border-radius: 44px 44px 0 0;
+      z-index: 10;
+    }
+    .back-btn {
+      font-size: 1.5rem;
+      color: #4a3b7c;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245, 240, 255, 0.7);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #ece4ff;
+      color: #6d28d9;
+      transform: scale(1.05);
+    }
+    .header-title {
+      font-weight: 700;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+    }
+    .header-icons {
+      display: flex;
+      gap: 10px;
+    }
+    .icon-circle {
+      font-size: 1.2rem;
+      color: #4a3b7c;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245, 240, 255, 0.7);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .icon-circle:hover {
+      background: #ece4ff;
+      color: #6d28d9;
+    }
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px 10px;
+      scroll-behavior: smooth;
+    }
+    .scroll-area::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scroll-area::-webkit-scrollbar-track {
+      background: #ffffff;
+    }
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: #c3a6ff;
+      border-radius: 10px;
+    }
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .action-btn {
+      font-size: 0.7rem;
+      color: #7c3aed;
+      cursor: pointer;
+      font-weight: 500;
+      background: none;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+    }
+    .action-btn.danger {
+      color: #ef4444;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-tab {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.25s;
+      border: 1px solid rgba(195, 166, 255, 0.4);
+      background: white;
+      color: #5b4d8b;
+    }
+    .filter-tab.active {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: white;
+      border-color: transparent;
+    }
+    .section-label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #9e93c2;
+      margin: 10px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .notification-card {
+      background: white;
+      border-radius: 20px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(221, 214, 254, 0.5);
+      display: flex;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      animation: slideIn 0.3s ease;
+    }
+    .notification-card:hover {
+      box-shadow: 0 10px 24px rgba(124, 58, 237, 0.1);
+      border-color: #c4b5fd;
+      transform: translateX(2px);
+    }
+    .notification-card.unread {
+      background: #faf7ff;
+      border-left: 3px solid #7c3aed;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .notif-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .notif-content {
+      flex: 1;
+    }
+    .notif-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #2d1b5e;
+    }
+    .notif-desc {
+      font-size: 0.7rem;
+      color: #6b5e9a;
+    }
+    .notif-time {
+      font-size: 0.6rem;
+      color: #9e93c2;
+      margin-top: 4px;
+    }
+    .delete-notif {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 0.7rem;
+      color: #c4b5fd;
+      cursor: pointer;
+      opacity: 0;
+      transition: 0.2s;
+    }
+    .notification-card:hover .delete-notif {
+      opacity: 1;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9e93c2;
+    }
+    .empty-state i {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 12px;
+      color: #d4c2ff;
+      animation: floatGlow 2.2s infinite;
+    }
+    @keyframes floatGlow {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px 12px 18px;
+      border-top: 1px solid rgba(209, 190, 255, 0.5);
+      border-radius: 0 0 44px 44px;
+    }
+    .nav-item {
+      color: #8479b5;
+      font-size: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .nav-item i {
+      font-size: 1.3rem;
+    }
+    .voice-btn-center {
+      background: linear-gradient(145deg, #a855f7, #7c3aed);
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -26px;
+      box-shadow: 0 12px 28px #a78bfa, 0 0 25px #c084fc;
+      color: white;
+      font-size: 1.6rem;
+      animation: floatGlow 2.2s infinite;
+      cursor: pointer;
+    }
+    @media screen and (min-width: 768px) {
+      .page-container {
+        max-width: 520px;
+        height: 88vh;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page-container">
+  <header class="top-header">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+    <div class="header-title">Notifications</div>
+    <div class="header-icons">
+      <a href="profile.html" class="icon-circle"><i class="fas fa-user-circle"></i></a>
+    </div>
+  </header>
+
+  <div class="scroll-area" id="scrollArea">
+    <div class="action-row">
+      <button class="action-btn" id="markAllRead">✓ Mark all read</button>
+      <button class="action-btn danger" id="clearAll">Clear all</button>
+    </div>
+
+    <div class="filter-tabs" id="filterTabs">
+      <span class="filter-tab active" data-filter="all">All</span>
+      <span class="filter-tab" data-filter="unread">Unread</span>
+      <span class="filter-tab" data-filter="important">Important</span>
+      <span class="filter-tab" data-filter="system">System</span>
+      <span class="filter-tab" data-filter="aitools">AI Tools</span>
+    </div>
+
+    <div id="notificationsContainer"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="chat.html" class="nav-item"><i class="fas fa-comment"></i><span>Chat</span></a>
+    <div class="voice-btn-center" onclick="window.location.href='chat.html'"><i class="fas fa-microphone"></i></div>
+    <a href="models.html" class="nav-item"><i class="fas fa-cubes"></i><span>Models</span></a>
+    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+</div>
+
+<script>
+  (function() {
+    const container = document.getElementById('notificationsContainer');
+    let currentFilter = 'all';
+
+    const initialNotifications = [
+      { id: 1, title: 'Gemini API Connected', desc: 'Gemini 1.5 Flash API linked successfully', time: 'Just now', icon: '💎', iconBg: '#ede9fe', category: 'system', unread: true, important: true },
+      { id: 2, title: 'Doctor AI Response', desc: 'New health analysis generated', time: '5 min ago', icon: '🩺', iconBg: '#fce7f3', category: 'aitools', unread: true, important: false },
+      { id: 3, title: 'AI Image Generator Live', desc: 'Image creation tool is now available', time: '12 min ago', icon: '🎨', iconBg: '#e0f2fe', category: 'aitools', unread: false, important: true },
+      { id: 4, title: 'Pro Subscription Expiring', desc: 'Your Pro plan expires in 3 days', time: '1 hour ago', icon: '👑', iconBg: '#fef3c7', category: 'important', unread: true, important: true },
+      { id: 5, title: 'New AI Model Added', desc: 'Claude 3.5 Sonnet now available', time: '2 hours ago', icon: '🧠', iconBg: '#ede9fe', category: 'system', unread: false, important: false },
+      { id: 6, title: 'Security Login Alert', desc: 'New login from Mumbai, India', time: '3 hours ago', icon: '🔒', iconBg: '#fee2e2', category: 'important', unread: true, important: true },
+      { id: 7, title: 'Voice AI Activated', desc: 'Voice assistant ready for commands', time: '5 hours ago', icon: '🎤', iconBg: '#f3e8ff', category: 'aitools', unread: false, important: false },
+      { id: 8, title: 'Analytics Updated', desc: 'Weekly AI usage report generated', time: 'Yesterday', icon: '📊', iconBg: '#ede9fe', category: 'system', unread: false, important: false },
+      { id: 9, title: 'Stock AI Alert', desc: 'Market trend analysis completed', time: 'Yesterday', icon: '📈', iconBg: '#fce7f3', category: 'aitools', unread: false, important: false },
+      { id: 10, title: 'API Rate Limit Warning', desc: 'Groq API approaching limit', time: '2 days ago', icon: '⚠️', iconBg: '#fef3c7', category: 'system', unread: false, important: true },
+    ];
+
+    let notifications = JSON.parse(localStorage.getItem('aiNotifications')) || initialNotifications;
+    if (!localStorage.getItem('aiNotifications')) {
+      localStorage.setItem('aiNotifications', JSON.stringify(initialNotifications));
+    }
+
+    function saveNotifications() {
+      localStorage.setItem('aiNotifications', JSON.stringify(notifications));
+    }
+
+    function groupByDate(notifs) {
+      const today = [];
+      const yesterday = [];
+      const earlier = [];
+      notifs.forEach(n => {
+        if (n.time.includes('ago') || n.time.includes('now')) today.push(n);
+        else if (n.time.includes('Yesterday')) yesterday.push(n);
+        else earlier.push(n);
+      });
+      return { today, yesterday, earlier };
+    }
+
+    function renderNotifications() {
+      let filtered = notifications;
+      if (currentFilter === 'unread') filtered = notifications.filter(n => n.unread);
+      else if (currentFilter === 'important') filtered = notifications.filter(n => n.important);
+      else if (currentFilter === 'system') filtered = notifications.filter(n => n.category === 'system');
+      else if (currentFilter === 'aitools') filtered = notifications.filter(n => n.category === 'aitools');
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state"><i class="fas fa-bell"></i><p>No notifications</p></div>`;
+        return;
+      }
+
+      const groups = groupByDate(filtered);
+      let html = '';
+      if (groups.today.length) {
+        html += '<div class="section-label">Today</div>';
+        groups.today.forEach(n => html += createCard(n));
+      }
+      if (groups.yesterday.length) {
+        html += '<div class="section-label">Yesterday</div>';
+        groups.yesterday.forEach(n => html += createCard(n));
+      }
+      if (groups.earlier.length) {
+        html += '<div class="section-label">Earlier</div>';
+        groups.earlier.forEach(n => html += createCard(n));
+      }
+      container.innerHTML = html;
+
+      document.querySelectorAll('.delete-notif').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const id = parseInt(this.dataset.id);
+          notifications = notifications.filter(n => n.id !== id);
+          saveNotifications();
+          renderNotifications();
+        });
+      });
+
+      document.querySelectorAll('.notification-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const id = parseInt(this.dataset.id);
+          const notif = notifications.find(n => n.id === id);
+          if (notif && notif.unread) {
+            notif.unread = false;
+            saveNotifications();
+            renderNotifications();
+          }
+        });
+      });
+    }
+
+    function createCard(n) {
+      return `
+        <div class="notification-card ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+          <div class="notif-icon" style="background:${n.iconBg};">${n.icon}</div>
+          <div class="notif-content">
+            <div class="notif-title">${n.title}</div>
+            <div class="notif-desc">${n.desc}</div>
+            <div class="notif-time">${n.time}</div>
+          </div>
+          <span class="delete-notif" data-id="${n.id}"><i class="fas fa-times"></i></span>
+        </div>
+      `;
+    }
+
+    document.getElementById('markAllRead').addEventListener('click', () => {
+      notifications.forEach(n => n.unread = false);
+      saveNotifications();
+      renderNotifications();
+    });
+
+    document.getElementById('clearAll').addEventListener('click', () => {
+      notifications = [];
+      saveNotifications();
+      renderNotifications();
+    });
+
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        currentFilter = this.dataset.filter;
+        renderNotifications();
+      });
+    });
+
+    renderNotifications();
+  })();
+</script>
+</body>
+</html>

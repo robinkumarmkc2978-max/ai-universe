@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AI Universe • Settings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #a855f7;
+      --glow: rgba(124, 58, 237, 0.3);
+      --bg: #f8f7ff;
+      --card-bg: #ffffff;
+      --text: #1e1b4b;
+      --text-secondary: #6b7280;
+      --border: #e8e5ff;
+      --shadow: 0 2px 12px rgba(124, 58, 237, 0.08);
+      --toggle-bg: #d4c2ff;
+      --input-bg: #faf8ff;
+      --accent: #7c3aed;
+      --accent-light: #ede9fe;
+      --radius: 18px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .dark-theme {
+      --bg: #0f0a1a;
+      --card-bg: #1a1025;
+      --text: #e4dcff;
+      --text-secondary: #b4afd4;
+      --border: #2d1f45;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+      --toggle-bg: #4a3b7c;
+      --input-bg: #2d1f45;
+      --accent-light: #2d1f45;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+      transition: background var(--transition), color var(--transition);
+    }
+    .page-container {
+      max-width: 480px;
+      width: 100%;
+      height: 92vh;
+      background: var(--card-bg);
+      border-radius: 36px;
+      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.08), 0 2px 8px rgba(0,0,0,0.03);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .top-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 18px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(245, 240, 255, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #5b4d8b;
+      font-size: 1.1rem;
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+    .back-btn:hover { background: #ede4ff; transform: scale(1.05); }
+    .header-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--accent), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      flex: 1;
+    }
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .section-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .settings-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: all var(--transition);
+    }
+    .settings-card:hover { border-color: var(--accent); }
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar-container {
+      position: relative;
+      cursor: pointer;
+    }
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--primary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.4rem;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-edit-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.55rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      background: var(--input-bg);
+      color: var(--text);
+      outline: none;
+      margin-top: 6px;
+      transition: all var(--transition);
+    }
+    .input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.08); }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      border: none;
+      transition: all var(--transition);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--primary-light));
+      color: #fff;
+      box-shadow: 0 4px 14px var(--glow);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 22px var(--glow); transform: translateY(-1px); }
+    .btn-outline { background: var(--accent-light); color: var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: #fff; }
+    .btn-danger { background: #fee2e2; color: #dc2626; }
+    .btn-danger:hover { background: #dc2626; color: #fff; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+    .toggle-label { font-size: 0.8rem; color: var(--text); font-weight: 500; }
+    .toggle-switch {
+      width: 46px;
+      height: 24px;
+      background: var(--toggle-bg);
+      border-radius: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .toggle-switch.active { background: var(--accent); }
+    .toggle-switch::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: all var(--transition);
+    }
+    .toggle-switch.active::after { left: 24px; }
+    .color-options { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all var(--transition);
+    }
+    .color-dot:hover { transform: scale(1.15); }
+    .color-dot.active { border-color: #fff; box-shadow: 0 0 0 3px var(--accent); }
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      z-index: 999;
+      animation: toastIn 0.4s ease, toastOut 0.4s ease 2.5s forwards;
+    }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 22px;
+      padding: 22px;
+      max-width: 360px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 8px 12px 14px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+    }
+    .nav-item {
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      gap: 2px;
+      transition: all var(--transition);
+    }
+    .nav-item i { font-size: 1.2rem; }
+    .nav-item.active { color: var(--accent); font-weight: 600; }
+    .voice-btn-center {
+      background: linear-gradient(135deg, var(--accent), var(--primary-light));
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -20px;
+      box-shadow: 0 8px 22px var(--glow);
+      color: #fff;
+      font-size: 1.3rem;
+      animation: floatMic 2.5s infinite;
+      cursor: pointer;
+    }
+    @keyframes floatMic { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  </style>
+</head>
+<body>
+<div class="page-container">
+  <header class="top-header">
+    <a href="index.html" class="back-btn">←</a>
+    <div class="header-title">Settings</div>
+  </header>
+
+  <div class="scroll-area" id="scrollArea">
+    <!-- Profile -->
+    <div class="section-title"><i class="fas fa-user-circle"></i> Profile</div>
+    <div class="settings-card">
+      <div class="profile-row">
+        <div class="avatar-container" id="avatarContainer">
+          <div class="avatar" id="avatarPreview"><i class="fas fa-user"></i></div>
+          <span class="avatar-edit-badge"><i class="fas fa-camera"></i></span>
+        </div>
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+        <div style="flex:1;">
+          <input class="input-field" id="usernameInput" placeholder="Username" value="AI User">
+          <input class="input-field" id="emailInput" placeholder="Email" value="user@aiuniverse.com">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn btn-primary" id="saveProfileBtn">Save Profile</button>
+        <button class="btn btn-outline" id="changePasswordBtn">Change Password</button>
+      </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="section-title"><i class="fas fa-palette"></i> Appearance</div>
+    <div class="settings-card">
+      <div class="toggle-row"><span class="toggle-label">Dark Mode</span><div class="toggle-switch" id="darkToggle"></div></div>
+      <div class="toggle-label" style="margin-top:6px;">Accent Color</div>
+      <div class="color-options" id="colorOptions">
+        <span class="color-dot active" data-color="#7c3aed" style="background:#7c3aed;"></span>
+        <span class="color-dot" data-color="#06b6d4" style="background:#06b6d4;"></span>
+        <span class="color-dot" data-color="#10b981" style="background:#10b981;"></span>
+        <span class="color-dot" data-color="#f97316" style="background:#f97316;"></span>
+        <span class="color-dot" data-color="#ec4899" style="background:#ec4899;"></span>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="section-title"><i class="fas fa-bell"></i> Notifications</div>
+    <div class="settings-card">
+      <div class="toggle-row"><span class="toggle-label">Push Notifications</span><div class="toggle-switch active" id="pushToggle"></div></div>
+      <div class="toggle-row"><span class="toggle-label">Sound Effects</span><div class="toggle-switch" id="soundToggle"></div></div>
+    </div>
+
+    <!-- Security -->
+    <div class="section-title"><i class="fas fa-shield-alt"></i> Security</div>
+    <div class="settings-card">
+      <div class="toggle-row"><span class="toggle-label">Fingerprint Login</span><div class="toggle-switch" id="fingerprintToggle"></div></div>
+      <button class="btn btn-danger" style="width:100%;margin-top:8px;" id="forgotPasswordBtn">Forgot Password</button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="chat.html" class="nav-item"><i class="fas fa-comment"></i><span>Chat</span></a>
+    <div class="voice-btn-center" onclick="window.location.href='chat.html'"><i class="fas fa-microphone"></i></div>
+    <a href="settings.html" class="nav-item active"><i class="fas fa-cog"></i><span>Settings</span></a>
+    <a href="feedback.html" class="nav-item"><i class="fas fa-user"></i><span>feedback</span></a>
+  </nav>
+</div>
+
+<script>
+(function() {
+  const avatarContainer = document.getElementById('avatarContainer');
+  const avatarUpload = document.getElementById('avatarUpload');
+  const avatarPreview = document.getElementById('avatarPreview');
+  const usernameInput = document.getElementById('usernameInput');
+  const emailInput = document.getElementById('emailInput');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const changePasswordBtn = document.getElementById('changePasswordBtn');
+  const darkToggle = document.getElementById('darkToggle');
+  const pushToggle = document.getElementById('pushToggle');
+  const soundToggle = document.getElementById('soundToggle');
+  const fingerprintToggle = document.getElementById('fingerprintToggle');
+  const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+  const colorDots = document.querySelectorAll('.color-dot');
+  const root = document.documentElement;
+
+  // ── THEME SYSTEM ──
+  function applyTheme(accent) {
+    root.style.setProperty('--accent', accent);
+    root.style.setProperty('--primary', accent);
+    root.style.setProperty('--primary-light', accent + 'cc');
+    root.style.setProperty('--glow', accent + '40');
+    root.style.setProperty('--accent-light', accent + '20');
+    localStorage.setItem('aiAccentColor', accent);
+  }
+
+  function loadTheme() {
+    const savedAccent = localStorage.getItem('aiAccentColor') || '#7c3aed';
+    applyTheme(savedAccent);
+    colorDots.forEach(dot => {
+      dot.classList.toggle('active', dot.dataset.color === savedAccent);
+    });
+  }
+
+  colorDots.forEach(dot => {
+    dot.addEventListener('click', function() {
+      colorDots.forEach(d => d.classList.remove('active'));
+      this.classList.add('active');
+      applyTheme(this.dataset.color);
+      showToast('Accent color updated');
+    });
+  });
+
+  // ── DARK MODE ──
+  function applyDarkMode(isDark) {
+    document.body.classList.toggle('dark-theme', isDark);
+    localStorage.setItem('aiGlobalDarkMode', isDark);
+    darkToggle.classList.toggle('active', isDark);
+  }
+
+  darkToggle.addEventListener('click', function() {
+    const isDark = !document.body.classList.contains('dark-theme');
+    applyDarkMode(isDark);
+    showToast(isDark ? 'Dark mode enabled' : 'Light mode enabled');
+  });
+
+  if (localStorage.getItem('aiGlobalDarkMode') === 'true') applyDarkMode(true);
+
+  // ── PROFILE ──
+  function loadProfile() {
+    const saved = JSON.parse(localStorage.getItem('aiProfile') || '{}');
+    if (saved.username) usernameInput.value = saved.username;
+    if (saved.email) emailInput.value = saved.email;
+    if (saved.avatar) {
+      avatarPreview.innerHTML = `<img src="${saved.avatar}" alt="Profile">`;
+    }
+  }
+
+  function saveProfile() {
+    const data = {
+      username: usernameInput.value.trim(),
+      email: emailInput.value.trim(),
+      avatar: avatarPreview.querySelector('img')?.src || ''
+    };
+    localStorage.setItem('aiProfile', JSON.stringify(data));
+    showToast('Profile saved successfully');
+  }
+
+  avatarContainer.addEventListener('click', () => avatarUpload.click());
+  avatarUpload.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      avatarPreview.innerHTML = `<img src="${ev.target.result}" alt="Profile">`;
+      saveProfile();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  saveProfileBtn.addEventListener('click', saveProfile);
+
+  // ── CHANGE PASSWORD ──
+  changePasswordBtn.addEventListener('click', function() {
+    showModal(`
+      <h3 style="color:#1e1b4b;">Change Password</h3>
+      <input class="input-field" type="password" id="oldPassword" placeholder="Old password">
+      <input class="input-field" type="password" id="newPassword" placeholder="New password">
+      <input class="input-field" type="password" id="confirmPassword" placeholder="Confirm password">
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;" id="confirmChangeBtn">Update Password</button>
+    `, () => {
+      const oldPw = document.getElementById('oldPassword')?.value;
+      const newPw = document.getElementById('newPassword')?.value;
+      const confirmPw = document.getElementById('confirmPassword')?.value;
+      const stored = localStorage.getItem('aiPassword') || 'admin123';
+      if (oldPw !== stored) return showToast('Wrong old password');
+      if (newPw.length < 6) return showToast('Password too short (min 6 chars)');
+      if (newPw !== confirmPw) return showToast('Passwords do not match');
+      localStorage.setItem('aiPassword', newPw);
+      showToast('Password updated successfully');
+    });
+  });
+
+  // ── FORGOT PASSWORD ──
+  forgotPasswordBtn.addEventListener('click', function() {
+    showModal(`
+      <h3 style="color:#1e1b4b;">Reset Password</h3>
+      <p style="font-size:0.75rem;color:#6b7280;">Enter your email to receive a reset link</p>
+      <input class="input-field" type="email" id="resetEmail" placeholder="your@email.com">
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;" id="sendResetBtn">Send Reset Link</button>
+    `, () => {
+      const email = document.getElementById('resetEmail')?.value;
+      if (!email) return showToast('Please enter your email');
+      showToast('Reset link sent to ' + email);
+    });
+  });
+
+  // ── TOGGLES ──
+  [pushToggle, soundToggle, fingerprintToggle].forEach(toggle => {
+    toggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      const key = this.id.replace('Toggle', '');
+      localStorage.setItem('ai' + key.charAt(0).toUpperCase() + key.slice(1), this.classList.contains('active'));
+    });
+    const key = toggle.id.replace('Toggle', '');
+    const saved = localStorage.getItem('ai' + key.charAt(0).toUpperCase() + key.slice(1));
+    if (saved === 'true') toggle.classList.add('active');
+  });
+
+  // ── NOTIFICATIONS ──
+  pushToggle.addEventListener('click', function() {
+    if (this.classList.contains('active') && 'Notification' in window) {
+      Notification.requestPermission().then(perm => {
+        if (perm === 'granted') {
+          new Notification('AI Universe', { body: 'Push notifications enabled!', icon: '🤖' });
+        }
+      });
+    }
+  });
+
+  // ── MODAL SYSTEM ──
+  function showModal(html, callback) {
+    const existing = document.querySelector('.modal-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `<div class="modal-box">${html}<button class="btn btn-outline" style="margin-top:8px;width:100%;" id="modalCloseBtn">Cancel</button></div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#modalCloseBtn').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+    if (callback) {
+      setTimeout(() => {
+        const btn = overlay.querySelector('#confirmChangeBtn') || overlay.querySelector('#sendResetBtn');
+        if (btn) btn.addEventListener('click', () => { callback(); overlay.remove(); });
+      }, 100);
+    }
+  }
+
+  // ── TOAST ──
+  function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // ── INIT ──
+  loadTheme();
+  loadProfile();
+})();
+</script>
+</body>
+</html>

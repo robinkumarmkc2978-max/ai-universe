@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidebar Resume Template</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #1f2937;
+      padding: 70px 20px 30px;
+      position: relative;
+    }
+    .back-btn, .download-btn {
+      position: fixed;
+      top: 20px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: 0.2s;
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 100;
+    }
+    .back-btn { left: 20px; }
+    .back-btn:hover { background: #f8fafc; }
+    .download-btn {
+      right: 20px;
+      background: #1e293b;
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+    .download-btn:hover { background: #0f172a; }
+
+    .resume-page {
+      width: 210mm;
+      height: 297mm;
+      background: white;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      display: flex;
+      overflow: hidden;
+      font-size: 15px;
+      transition: font-size 0.1s ease;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 35%;
+      background: #1e293b;
+      color: #f1f5f9;
+      padding: 25mm 10mm 10mm;
+      display: flex;
+      flex-direction: column;
+      gap: 8mm;
+      overflow-y: auto;
+    }
+    .sidebar .profile-photo {
+      width: 30mm;
+      height: 30mm;
+      border-radius: 50%;
+      background-color: #475569;
+      background-size: cover;
+      background-position: center;
+      margin: 0 auto 5mm;
+      border: 3px solid #f1f5f9;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .sidebar .profile-photo:hover::after {
+      content: "📷";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.4);
+      color: white;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6mm;
+    }
+    .sidebar .name {
+      font-size: 1.6em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1mm;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .sidebar .name:focus { background: rgba(255,255,255,0.1); }
+    .sidebar .job-title {
+      font-size: 0.95em;
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 8mm;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 4px;
+    }
+    .sidebar .job-title:focus { background: rgba(255,255,255,0.1); }
+    .sidebar .contact-item {
+      font-size: 0.8em;
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+      margin-bottom: 3mm;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .sidebar .contact-item:focus { background: rgba(255,255,255,0.1); }
+    .sidebar .section-title {
+      font-size: 0.9em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #f1f5f9;
+      margin-bottom: 4mm;
+      padding-bottom: 2mm;
+      border-bottom: 1px solid #475569;
+    }
+    .sidebar .list {
+      list-style: none;
+    }
+    .sidebar .list li {
+      font-size: 0.8em;
+      color: #cbd5e1;
+      padding: 1.5mm 0;
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+      outline: none;
+      border-radius: 2px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .sidebar .list li:focus { background: rgba(255,255,255,0.1); }
+    .sidebar .list li::before {
+      content: "▹";
+      color: #94a3b8;
+      font-weight: bold;
+    }
+    .sidebar .add-btn {
+      background: none;
+      border: 1px dashed #64748b;
+      color: #94a3b8;
+      font-size: 0.7em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 2mm;
+      transition: 0.2s;
+      align-self: flex-start;
+    }
+    .sidebar .add-btn:hover { background: rgba(255,255,255,0.05); }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      padding: 25mm 12mm 10mm;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+    }
+    .main-content .section-title {
+      font-size: 0.9em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1e293b;
+      margin-bottom: 4mm;
+      padding-bottom: 2mm;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .editable-paragraph {
+      font-size: 0.85em;
+      line-height: 1.6;
+      color: #475569;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px;
+      min-height: 2em;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .editable-paragraph:focus { background: #f8fafc; }
+    .experience-item, .education-item, .project-item, .certification-item {
+      margin-bottom: 5mm;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.5mm;
+    }
+    .item-title {
+      font-weight: 700;
+      font-size: 0.95em;
+      color: #1e293b;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .item-title:focus { background: #f1f5f9; }
+    .item-subtitle {
+      font-weight: 600;
+      font-size: 0.8em;
+      color: #475569;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .item-subtitle:focus { background: #f1f5f9; }
+    .item-date {
+      font-size: 0.75em;
+      color: #64748b;
+      white-space: nowrap;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .item-date:focus { background: #f1f5f9; }
+    .item-description {
+      font-size: 0.8em;
+      line-height: 1.4;
+      color: #475569;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .item-description:focus { background: #f8fafc; }
+    .main-content .add-btn {
+      background: none;
+      border: 1px dashed #94a3b8;
+      color: #475569;
+      font-size: 0.7em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 2mm;
+      transition: 0.2s;
+      align-self: flex-start;
+    }
+    .main-content .add-btn:hover { background: #f1f5f9; }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .back-btn, .download-btn { display: none; }
+      .resume-page { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <a href="resume-maker.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+  <button class="download-btn" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
+
+  <div class="resume-page" id="resumePage">
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+      <div class="profile-photo" id="profilePhoto" onclick="document.getElementById('photoUpload').click()"
+           style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2240%22 r=%2225%22 fill=%22%23475569%22/><ellipse cx=%2250%22 cy=%2290%22 rx=%2245%22 ry=%2225%22 fill=%22%23475569%22/></svg>');">
+        <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+      </div>
+      <h1 class="name" contenteditable="true" spellcheck="false">John Carter</h1>
+      <p class="job-title" contenteditable="true" spellcheck="false">Senior Product Designer</p>
+
+      <div>
+        <div class="section-title">Contact</div>
+        <div class="contact-item" contenteditable="true" spellcheck="false">📞 (415) 555-1234</div>
+        <div class="contact-item" contenteditable="true" spellcheck="false">✉️ john.carter@email.com</div>
+        <div class="contact-item" contenteditable="true" spellcheck="false">📍 San Francisco, CA</div>
+        <div class="contact-item" contenteditable="true" spellcheck="false">🌐 johncarter.design</div>
+      </div>
+
+      <div>
+        <div class="section-title">Skills</div>
+        <ul class="list" id="skillsList">
+          <li contenteditable="true" spellcheck="false">UI/UX Design</li>
+          <li contenteditable="true" spellcheck="false">Wireframing</li>
+          <li contenteditable="true" spellcheck="false">Prototyping</li>
+          <li contenteditable="true" spellcheck="false">Figma</li>
+          <li contenteditable="true" spellcheck="false">User Research</li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('skillsList')">+ Add Skill</button>
+      </div>
+
+      <div>
+        <div class="section-title">Languages</div>
+        <ul class="list" id="languagesList">
+          <li contenteditable="true" spellcheck="false">English (Native)</li>
+          <li contenteditable="true" spellcheck="false">German (Intermediate)</li>
+        </ul>
+        <button class="add-btn" onclick="addListItem('languagesList')">+ Add Language</button>
+      </div>
+    </div>
+
+    <!-- Right Content Area -->
+    <div class="main-content">
+      <div>
+        <div class="section-title">Professional Summary</div>
+        <p class="editable-paragraph" contenteditable="true" spellcheck="false" data-max-words="80"
+           data-warning="Word limit reached (80 words)">
+          Creative and analytical Product Designer with 8+ years of experience delivering end‑to‑end digital solutions. Proven ability to lead design projects, conduct user research, and build scalable design systems that enhance user experience and business metrics.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-title">Work Experience</div>
+        <div id="experienceContainer">
+          <div class="experience-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">Senior Product Designer</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2020 – Present</span>
+            </div>
+            <div class="item-subtitle" contenteditable="true" spellcheck="false">DesignHub, San Francisco</div>
+            <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="120"
+               data-warning="Word limit reached (120 words)">
+              Led the redesign of the company's flagship SaaS platform, resulting in a 40% increase in user engagement. Managed a team of 3 designers and implemented a new design system used across 6 product teams.
+            </p>
+          </div>
+          <div class="experience-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">UX Designer</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2017 – 2020</span>
+            </div>
+            <div class="item-subtitle" contenteditable="true" spellcheck="false">PixelPerfect Agency, Remote</div>
+            <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="120"
+               data-warning="Word limit reached (120 words)">
+              Designed user interfaces for 15+ client projects, conducting usability tests and delivering interactive prototypes that reduced development time by 25%.
+            </p>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addExperience()">+ Add Experience</button>
+      </div>
+
+      <div>
+        <div class="section-title">Education</div>
+        <div id="educationContainer">
+          <div class="education-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">B.F.A. in Graphic Design</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2013 – 2017</span>
+            </div>
+            <div class="item-subtitle" contenteditable="true" spellcheck="false">Rhode Island School of Design</div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addEducation()">+ Add Education</button>
+      </div>
+
+      <div>
+        <div class="section-title">Certifications</div>
+        <div id="certificationsContainer">
+          <div class="certification-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">Google UX Design Certificate</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2021</span>
+            </div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addCertification()">+ Add Certification</button>
+      </div>
+
+      <div>
+        <div class="section-title">Projects</div>
+        <div id="projectsContainer">
+          <div class="project-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">FinTrack Mobile App</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2022</span>
+            </div>
+            <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="80"
+               data-warning="Word limit reached (80 words)">
+              Designed a personal finance app achieving 50K downloads and a 4.8‑star rating in the first quarter.
+            </p>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addProject()">+ Add Project</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Photo upload handler
+      window.handlePhotoUpload = function(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('profilePhoto').style.backgroundImage = `url('${e.target.result}')`;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      // Word limit enforcement
+      function enforceWordLimit(element) {
+        const maxWords = parseInt(element.getAttribute('data-max-words'));
+        if (!maxWords) return;
+        const text = element.textContent.trim();
+        const words = text.split(/\s+/).filter(w => w.length > 0);
+        if (words.length > maxWords) {
+          alert(element.getAttribute('data-warning') || `Word limit of ${maxWords} reached.`);
+          const truncated = words.slice(0, maxWords).join(' ');
+          element.textContent = truncated;
+          // Move cursor to end
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          range.collapse(false);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+
+      // Overflow check: reduce font size if content overflows the fixed A4 height
+      function checkOverflow() {
+        const resume = document.getElementById('resumePage');
+        if (!resume) return;
+        const currentSize = parseFloat(getComputedStyle(resume).fontSize);
+        let safety = 0;
+        while (resume.scrollHeight > resume.clientHeight && safety < 30 && currentSize > 8) {
+          const newSize = currentSize - 0.5;
+          resume.style.fontSize = newSize + 'px';
+          safety++;
+          if (safety > 25) break;
+        }
+        // If font was reduced but now there's space, slowly increase back
+        if (safety === 0 && currentSize < 15 && resume.scrollHeight <= resume.clientHeight) {
+          resume.style.fontSize = Math.min(15, currentSize + 0.5) + 'px';
+        }
+      }
+
+      // Attach input listeners to contenteditable elements
+      function attachListeners() {
+        document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+          if (!el._overflowListener) {
+            el.addEventListener('input', function(e) {
+              if (this.hasAttribute('data-max-words')) {
+                enforceWordLimit(this);
+              }
+              checkOverflow();
+            });
+            el._overflowListener = true;
+          }
+        });
+      }
+
+      // Mutation observer for dynamically added elements
+      const observer = new MutationObserver(mutations => {
+        attachListeners();
+      });
+      observer.observe(document.getElementById('resumePage'), { childList: true, subtree: true, characterData: true });
+
+      // Dynamic field addition functions
+      window.addListItem = function(containerId) {
+        const ul = document.getElementById(containerId);
+        if (!ul) return;
+        const li = document.createElement('li');
+        li.setAttribute('contenteditable', 'true');
+        li.setAttribute('spellcheck', 'false');
+        li.textContent = 'New Item';
+        ul.appendChild(li);
+        li.focus();
+        attachListeners();
+        checkOverflow();
+      };
+
+      window.addExperience = function() {
+        const container = document.getElementById('experienceContainer');
+        const div = document.createElement('div');
+        div.className = 'experience-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Job Title</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY – YYYY</span>
+          </div>
+          <div class="item-subtitle" contenteditable="true" spellcheck="false">Company Name</div>
+          <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="120"
+             data-warning="Word limit reached (120 words)">Description of responsibilities.</p>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      window.addEducation = function() {
+        const container = document.getElementById('educationContainer');
+        const div = document.createElement('div');
+        div.className = 'education-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Degree</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY – YYYY</span>
+          </div>
+          <div class="item-subtitle" contenteditable="true" spellcheck="false">School Name</div>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      window.addCertification = function() {
+        const container = document.getElementById('certificationsContainer');
+        const div = document.createElement('div');
+        div.className = 'certification-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Certification Name</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY</span>
+          </div>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      window.addProject = function() {
+        const container = document.getElementById('projectsContainer');
+        const div = document.createElement('div');
+        div.className = 'project-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Project Name</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY</span>
+          </div>
+          <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="80"
+             data-warning="Word limit reached (80 words)">Brief description.</p>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      // PDF download
+      window.downloadPDF = function() {
+        const element = document.getElementById('resumePage');
+        const opt = {
+          margin: 0,
+          filename: 'sidebar-resume.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: [210, 297], orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+      };
+
+      // Initial setup
+      document.addEventListener('DOMContentLoaded', () => {
+        attachListeners();
+        setTimeout(checkOverflow, 100);
+      });
+    })();
+  </script>
+</body>
+</html>

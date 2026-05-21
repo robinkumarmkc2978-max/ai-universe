@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AI Universe • Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f3ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
+    .page-container {
+      max-width: 480px;
+      width: 100%;
+      height: 90vh;
+      background: #ffffff;
+      border-radius: 44px;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.08), 0 10px 25px rgba(102, 51, 153, 0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 10px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(168, 126, 255, 0.1);
+      border-radius: 44px 44px 0 0;
+      z-index: 10;
+    }
+    .back-btn {
+      font-size: 1.5rem;
+      color: #4a3b7c;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245, 240, 255, 0.7);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #ece4ff;
+      color: #6d28d9;
+      transform: scale(1.05);
+    }
+    .header-title {
+      font-weight: 700;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+    }
+    .header-icons {
+      display: flex;
+      gap: 10px;
+    }
+    .icon-circle {
+      font-size: 1.2rem;
+      color: #4a3b7c;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245, 240, 255, 0.7);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .icon-circle:hover {
+      background: #ece4ff;
+      color: #6d28d9;
+    }
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px 10px;
+      scroll-behavior: smooth;
+    }
+    .scroll-area::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scroll-area::-webkit-scrollbar-track {
+      background: #ffffff;
+    }
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: #c3a6ff;
+      border-radius: 10px;
+    }
+    .hero-card {
+      background: linear-gradient(135deg, #1e1040, #2d1b5e, #1e1040);
+      border-radius: 28px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 18px;
+      border: 1px solid rgba(196, 167, 255, 0.4);
+      box-shadow: 0 20px 40px rgba(124, 58, 237, 0.25), 0 0 60px rgba(168, 85, 247, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+      animation: heroGlow 4s infinite;
+    }
+    @keyframes heroGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .hero-title {
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: white;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-subtitle {
+      color: #c4b5fd;
+      font-size: 0.85rem;
+      margin: 8px 0 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .upgrade-btn {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1e1b2e;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      animation: pulseBtn 2s infinite;
+      font-family: 'Poppins', sans-serif;
+    }
+    @keyframes pulseBtn {
+      0% { box-shadow: 0 0 0 0 rgba(251,191,36,0.5); }
+      70% { box-shadow: 0 0 0 18px rgba(251,191,36,0); }
+      100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }
+    }
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .plan-card {
+      background: white;
+      border-radius: 22px;
+      padding: 16px 10px;
+      text-align: center;
+      border: 1px solid rgba(221, 214, 254, 0.6);
+      transition: 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+    .plan-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 30px rgba(124, 58, 237, 0.12);
+    }
+    .plan-card.pro {
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 24px rgba(251,191,36,0.3);
+      animation: floatCard 3s infinite;
+    }
+    @keyframes floatCard {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0); }
+    }
+    .plan-badge {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1e1b2e;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .plan-price {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: #2d1b5e;
+      margin: 6px 0;
+    }
+    .plan-features {
+      font-size: 0.6rem;
+      color: #6b5e9a;
+      list-style: none;
+      text-align: left;
+      padding: 0 4px;
+    }
+    .plan-features li {
+      margin: 3px 0;
+    }
+    .plan-features i {
+      color: #10b981;
+      font-size: 0.5rem;
+      margin-right: 3px;
+    }
+    .select-plan-btn {
+      background: #f5f0ff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 0.7rem;
+      cursor: pointer;
+      margin-top: 8px;
+      color: #7c3aed;
+      font-family: 'Poppins', sans-serif;
+    }
+    .pro .select-plan-btn {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1e1b2e;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .feature-card {
+      background: white;
+      border-radius: 18px;
+      padding: 14px 8px;
+      text-align: center;
+      border: 1px solid rgba(221, 214, 254, 0.5);
+      transition: 0.25s;
+      cursor: pointer;
+    }
+    .feature-card:hover {
+      box-shadow: 0 10px 22px rgba(124, 58, 237, 0.1);
+      border-color: #c4b5fd;
+    }
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+    }
+    .feature-name {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #2d1b5e;
+    }
+    .stats-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .stat-item {
+      flex: 1;
+      background: white;
+      border-radius: 18px;
+      padding: 14px;
+      text-align: center;
+      border: 1px solid rgba(221, 214, 254, 0.5);
+    }
+    .stat-value {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #2d1b5e;
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      color: #6b5e9a;
+    }
+    .testimonial-card {
+      background: white;
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(221, 214, 254, 0.5);
+    }
+    .stars {
+      color: #fbbf24;
+    }
+    .faq-card {
+      background: white;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(221, 214, 254, 0.5);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .faq-card:hover {
+      background: #faf8ff;
+    }
+    .faq-q {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #2d1b5e;
+    }
+    .faq-a {
+      font-size: 0.7rem;
+      color: #6b5e9a;
+      margin-top: 4px;
+      display: none;
+    }
+    .faq-card.open .faq-a {
+      display: block;
+    }
+    .payment-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .payment-chip {
+      background: #f5f0ff;
+      padding: 10px 16px;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.2s;
+      color: #6d28d9;
+    }
+    .payment-chip:hover {
+      border-color: #c4b5fd;
+      background: #ece4ff;
+    }
+    .checkout-btn {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1e1b2e;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 10px;
+    }
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px 12px 18px;
+      border-top: 1px solid rgba(209, 190, 255, 0.5);
+      border-radius: 0 0 44px 44px;
+    }
+    .nav-item {
+      color: #8479b5;
+      font-size: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .nav-item i {
+      font-size: 1.3rem;
+    }
+    .voice-btn-center {
+      background: linear-gradient(145deg, #fbbf24, #f59e0b);
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -26px;
+      box-shadow: 0 12px 28px #fbbf24, 0 0 25px #f59e0b;
+      color: #1e1b2e;
+      font-size: 1.6rem;
+      animation: floatGlow 2.2s infinite;
+      cursor: pointer;
+    }
+    @keyframes floatGlow {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0px); }
+    }
+    @media screen and (min-width: 768px) {
+      .page-container {
+        max-width: 520px;
+        height: 88vh;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page-container">
+  <header class="top-header">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+    <div class="header-title"><i class="fas fa-crown"></i> AI Universe Pro</div>
+    <div class="header-icons">
+      <a href="notification.html" class="icon-circle"><i class="fas fa-bell"></i></a>
+      <a href="profile.html" class="icon-circle"><i class="fas fa-user-circle"></i></a>
+    </div>
+  </header>
+
+  <div class="scroll-area">
+    <div class="hero-card">
+      <div class="hero-title">Upgrade to Pro</div>
+      <div class="hero-subtitle">Unlock unlimited AI power with all premium models</div>
+      <button class="upgrade-btn" onclick="alert('✨ Welcome to AI Universe Pro!')">Upgrade Now</button>
+    </div>
+
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-price">Free</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> 10 chats/day</li>
+          <li><i class="fas fa-check"></i> Basic AI</li>
+          <li><i class="fas fa-check"></i> 1 model</li>
+        </ul>
+        <button class="select-plan-btn">Current</button>
+      </div>
+      <div class="plan-card pro">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-price">$19/mo</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Unlimited chats</li>
+          <li><i class="fas fa-check"></i> All AI models</li>
+          <li><i class="fas fa-check"></i> Voice & Image</li>
+        </ul>
+        <button class="select-plan-btn">Select Pro</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-price">$49/mo</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Pro features</li>
+          <li><i class="fas fa-check"></i> API access</li>
+          <li><i class="fas fa-check"></i> Priority speed</li>
+        </ul>
+        <button class="select-plan-btn">Select Ultra</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-value">52K+</div><div class="stat-label">Pro Users</div></div>
+      <div class="stat-item"><div class="stat-value">1.2M</div><div class="stat-label">Generations</div></div>
+      <div class="stat-item"><div class="stat-value">12</div><div class="stat-label">AI Models</div></div>
+    </div>
+
+    <div class="features-grid">
+      <a href="chat.html" class="feature-card" style="text-decoration:none;color:inherit;"><div class="feature-icon">💬</div><div class="feature-name">Unlimited Chat</div></a>
+      <a href="tools/image-generator.html" class="feature-card" style="text-decoration:none;color:inherit;"><div class="feature-icon">🎨</div><div class="feature-name">AI Images</div></a>
+      <a href="tools/voice-ai.html" class="feature-card" style="text-decoration:none;color:inherit;"><div class="feature-icon">🎤</div><div class="feature-name">Voice AI</div></a>
+      <a href="tools/resume-maker.html" class="feature-card" style="text-decoration:none;color:inherit;"><div class="feature-icon">📄</div><div class="feature-name">Resume Maker</div></a>
+      <a href="tools/website-builder.html" class="feature-card" style="text-decoration:none;color:inherit;"><div class="feature-icon">💻</div><div class="feature-name">Web Builder</div></a>
+      <a href="tools/pdf-reader.html" class="feature-card" style="text-decoration:none;color:inherit;"><div class="feature-icon">📚</div><div class="feature-name">PDF Reader</div></a>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+      <p style="font-size:0.75rem;color:#2d1b5e;">"AI Universe Pro transformed my workflow. The multi-AI consensus is incredible!"</p>
+      <span style="font-size:0.65rem;color:#6b5e9a;">— Priya S., CEO</span>
+    </div>
+
+    <div class="faq-card" onclick="this.classList.toggle('open')">
+      <div class="faq-q">What is AI Universe Pro?</div>
+      <div class="faq-a">Premium access to all AI models with unlimited usage and priority support.</div>
+    </div>
+    <div class="faq-card" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Is API included?</div>
+      <div class="faq-a">Yes, Pro and Ultra plans include API access for developers.</div>
+    </div>
+    <div class="faq-card" onclick="this.classList.toggle('open')">
+      <div class="faq-q">Can I cancel anytime?</div>
+      <div class="faq-a">Absolutely. Cancel anytime with no hidden fees.</div>
+    </div>
+
+    <div class="payment-options">
+      <div class="payment-chip"><i class="fas fa-credit-card"></i> Card</div>
+      <div class="payment-chip"><i class="fas fa-mobile-alt"></i> UPI</div>
+      <div class="payment-chip"><i class="fab fa-paypal"></i> PayPal</div>
+      <div class="payment-chip"><i class="fab fa-google"></i> Google Pay</div>
+    </div>
+    <button class="checkout-btn" onclick="alert('🎉 Redirecting to secure checkout...')">Proceed to Checkout</button>
+    <div style="height:80px;"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="chat.html" class="nav-item"><i class="fas fa-comment"></i><span>Chat</span></a>
+    <div class="voice-btn-center" onclick="window.location.href='chat.html'"><i class="fas fa-crown"></i></div>
+    <a href="models.html" class="nav-item"><i class="fas fa-cubes"></i><span>Models</span></a>
+    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+  </nav>
+</div>
+</body>
+</html>

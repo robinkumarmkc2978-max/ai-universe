@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Resume Template</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #0b1120;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #e2e8f0;
+      padding: 70px 20px 30px;
+      position: relative;
+    }
+    .back-btn, .download-btn {
+      position: fixed;
+      top: 20px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: 0.2s;
+      text-decoration: none;
+      color: #e2e8f0;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 100;
+    }
+    .back-btn { left: 20px; }
+    .back-btn:hover { background: #334155; }
+    .download-btn {
+      right: 20px;
+      background: #6366f1;
+      border: none;
+      font-weight: 600;
+    }
+    .download-btn:hover { background: #4f46e5; }
+
+    .resume-page {
+      width: 210mm;
+      height: 297mm;
+      background: #0f172a;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-size: 15px;
+      transition: font-size 0.1s ease;
+      color: #e2e8f0;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 20mm 12mm 8mm;
+      text-align: center;
+      border-bottom: 1px solid #334155;
+    }
+    .profile-photo {
+      width: 30mm;
+      height: 30mm;
+      border-radius: 50%;
+      background-color: #334155;
+      background-size: cover;
+      background-position: center;
+      margin: 0 auto 6mm;
+      border: 3px solid #6366f1;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+      position: relative;
+    }
+    .profile-photo:hover::after {
+      content: "📷";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6mm;
+    }
+    .name {
+      font-size: 2em;
+      font-weight: 700;
+      outline: none;
+      border-radius: 4px;
+      padding: 0 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      color: #f8fafc;
+      margin-bottom: 2mm;
+    }
+    .name:focus { background: rgba(255,255,255,0.1); }
+    .job-title {
+      font-size: 1.1em;
+      color: #a5b4fc;
+      outline: none;
+      border-radius: 4px;
+      padding: 0 4px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .job-title:focus { background: rgba(255,255,255,0.1); }
+
+    .contact-strip {
+      background: #1e293b;
+      padding: 4mm 12mm;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6mm;
+      justify-content: center;
+      font-size: 0.8em;
+      color: #cbd5e1;
+      border-bottom: 1px solid #334155;
+    }
+    .contact-item {
+      outline: none;
+      border-radius: 3px;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+    }
+    .contact-item:focus { background: rgba(255,255,255,0.1); }
+    .contact-item i { color: #6366f1; }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8mm 12mm 10mm;
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+    }
+    .section-title {
+      font-size: 1em;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 3mm;
+      padding-bottom: 2mm;
+      border-bottom: 2px solid #6366f1;
+    }
+    .editable-paragraph {
+      font-size: 0.85em;
+      line-height: 1.6;
+      color: #cbd5e1;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px;
+      min-height: 2em;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .editable-paragraph:focus { background: rgba(255,255,255,0.05); }
+
+    .experience-item, .education-item, .project-item {
+      margin-bottom: 4mm;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1mm;
+    }
+    .item-title {
+      font-weight: 700;
+      font-size: 0.95em;
+      color: #f1f5f9;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .item-title:focus { background: rgba(255,255,255,0.05); }
+    .item-subtitle {
+      font-weight: 600;
+      font-size: 0.8em;
+      color: #94a3b8;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .item-subtitle:focus { background: rgba(255,255,255,0.05); }
+    .item-date {
+      font-size: 0.75em;
+      color: #64748b;
+      white-space: nowrap;
+      outline: none;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .item-date:focus { background: rgba(255,255,255,0.05); }
+    .item-description {
+      font-size: 0.8em;
+      line-height: 1.4;
+      color: #94a3b8;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .item-description:focus { background: rgba(255,255,255,0.05); }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3mm;
+      margin-bottom: 2mm;
+    }
+    .skill-tag {
+      padding: 2mm 5mm;
+      border-radius: 20px;
+      font-size: 0.75em;
+      font-weight: 600;
+      color: white;
+      background: #6366f1;
+      outline: none;
+      cursor: text;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .skill-tag:focus { box-shadow: 0 0 0 2px #a5b4fc; }
+
+    .add-btn {
+      background: none;
+      border: 1px dashed #475569;
+      color: #94a3b8;
+      font-size: 0.7em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 2mm;
+      transition: 0.2s;
+      align-self: flex-start;
+    }
+    .add-btn:hover { background: rgba(255,255,255,0.05); }
+
+    @media print {
+      body { background: #0f172a; padding: 0; }
+      .back-btn, .download-btn { display: none; }
+      .resume-page { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <a href="resume-maker.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+  <button class="download-btn" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
+
+  <div class="resume-page" id="resumePage">
+    <div class="header">
+      <div class="profile-photo" id="profilePhoto" onclick="document.getElementById('photoUpload').click()"
+           style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2240%22 r=%2225%22 fill=%22%23334155%22/><ellipse cx=%2250%22 cy=%2290%22 rx=%2245%22 ry=%2225%22 fill=%22%23334155%22/></svg>');">
+        <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+      </div>
+      <h1 class="name" contenteditable="true" spellcheck="false">Marcus Reed</h1>
+      <p class="job-title" contenteditable="true" spellcheck="false">Full‑Stack Developer & Architect</p>
+    </div>
+
+    <div class="contact-strip">
+      <span class="contact-item" contenteditable="true" spellcheck="false"><i class="fas fa-phone"></i> +1 (312) 555-4201</span>
+      <span class="contact-item" contenteditable="true" spellcheck="false"><i class="fas fa-envelope"></i> marcus.reed@dev.com</span>
+      <span class="contact-item" contenteditable="true" spellcheck="false"><i class="fas fa-map-marker-alt"></i> Chicago, IL</span>
+      <span class="contact-item" contenteditable="true" spellcheck="false"><i class="fas fa-globe"></i> marcusreed.dev</span>
+    </div>
+
+    <div class="main-content">
+      <div>
+        <div class="section-title">Professional Summary</div>
+        <p class="editable-paragraph" contenteditable="true" spellcheck="false" data-max-words="80"
+           data-warning="Word limit reached (80 words)">
+          Results‑driven full‑stack developer with 7+ years of experience building scalable web applications. Proficient in React, Node.js, and cloud architecture. Passionate about clean code and mentoring teams to deliver high‑impact digital products.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-title">Work Experience</div>
+        <div id="experienceContainer">
+          <div class="experience-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">Senior Software Engineer</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2021 – Present</span>
+            </div>
+            <div class="item-subtitle" contenteditable="true" spellcheck="false">NexGen Systems, Chicago</div>
+            <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="120"
+               data-warning="Word limit reached (120 words)">
+              Architected microservices infrastructure handling 1M+ daily requests. Led migration to React and Node.js, cutting page load times by 60%. Mentored junior developers and introduced automated testing pipelines.
+            </p>
+          </div>
+          <div class="experience-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">Full‑Stack Developer</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2018 – 2021</span>
+            </div>
+            <div class="item-subtitle" contenteditable="true" spellcheck="false">Digital Solutions Co., Remote</div>
+            <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="120"
+               data-warning="Word limit reached (120 words)">
+              Developed responsive web applications using React and Django. Optimized database queries, improving performance by 40%. Collaborated with UI/UX team to create seamless user experiences.
+            </p>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addExperience()">+ Add Experience</button>
+      </div>
+
+      <div>
+        <div class="section-title">Education</div>
+        <div id="educationContainer">
+          <div class="education-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">B.S. Computer Science</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2014 – 2018</span>
+            </div>
+            <div class="item-subtitle" contenteditable="true" spellcheck="false">University of Illinois, Urbana‑Champaign</div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addEducation()">+ Add Education</button>
+      </div>
+
+      <div>
+        <div class="section-title">Skills</div>
+        <div class="skills-container" id="skillsContainer">
+          <span class="skill-tag" contenteditable="true" spellcheck="false">React</span>
+          <span class="skill-tag" contenteditable="true" spellcheck="false">Node.js</span>
+          <span class="skill-tag" contenteditable="true" spellcheck="false">TypeScript</span>
+          <span class="skill-tag" contenteditable="true" spellcheck="false">AWS</span>
+          <span class="skill-tag" contenteditable="true" spellcheck="false">Docker</span>
+          <span class="skill-tag" contenteditable="true" spellcheck="false">GraphQL</span>
+        </div>
+        <button class="add-btn" onclick="addSkill()">+ Add Skill</button>
+      </div>
+
+      <div>
+        <div class="section-title">Projects</div>
+        <div id="projectsContainer">
+          <div class="project-item">
+            <div class="item-header">
+              <span class="item-title" contenteditable="true" spellcheck="false">DevFlow CLI Tool</span>
+              <span class="item-date" contenteditable="true" spellcheck="false">2023</span>
+            </div>
+            <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="80"
+               data-warning="Word limit reached (80 words)">
+              Built an open‑source CLI tool that automates developer workflows, accumulating 2K+ GitHub stars and used by 500+ teams worldwide.
+            </p>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addProject()">+ Add Project</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      window.handlePhotoUpload = function(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('profilePhoto').style.backgroundImage = `url('${e.target.result}')`;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      function enforceWordLimit(element) {
+        const maxWords = parseInt(element.getAttribute('data-max-words'));
+        if (!maxWords) return;
+        const text = element.textContent.trim();
+        const words = text.split(/\s+/).filter(w => w.length > 0);
+        if (words.length > maxWords) {
+          alert(element.getAttribute('data-warning') || `Word limit of ${maxWords} reached.`);
+          element.textContent = words.slice(0, maxWords).join(' ');
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          range.collapse(false);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+
+      function checkOverflow() {
+        const resume = document.getElementById('resumePage');
+        if (!resume) return;
+        let currentSize = parseFloat(getComputedStyle(resume).fontSize);
+        let safety = 0;
+        while (resume.scrollHeight > resume.clientHeight && safety < 30 && currentSize > 8) {
+          currentSize -= 0.5;
+          resume.style.fontSize = currentSize + 'px';
+          safety++;
+        }
+        if (safety === 0 && currentSize < 15 && resume.scrollHeight <= resume.clientHeight) {
+          resume.style.fontSize = Math.min(15, currentSize + 0.5) + 'px';
+        }
+      }
+
+      function attachListeners() {
+        document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+          if (!el._overflowListener) {
+            el.addEventListener('input', function(e) {
+              if (this.hasAttribute('data-max-words')) enforceWordLimit(this);
+              checkOverflow();
+            });
+            el._overflowListener = true;
+          }
+        });
+      }
+
+      new MutationObserver(() => attachListeners()).observe(
+        document.getElementById('resumePage'), { childList: true, subtree: true, characterData: true }
+      );
+
+      window.addSkill = function() {
+        const container = document.getElementById('skillsContainer');
+        const span = document.createElement('span');
+        span.className = 'skill-tag';
+        span.setAttribute('contenteditable', 'true');
+        span.setAttribute('spellcheck', 'false');
+        span.textContent = 'New Skill';
+        container.appendChild(span);
+        span.focus();
+        attachListeners();
+        checkOverflow();
+      };
+
+      window.addExperience = function() {
+        const container = document.getElementById('experienceContainer');
+        const div = document.createElement('div');
+        div.className = 'experience-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Job Title</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY – YYYY</span>
+          </div>
+          <div class="item-subtitle" contenteditable="true" spellcheck="false">Company</div>
+          <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="120"
+             data-warning="Word limit reached (120 words)">Description</p>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      window.addEducation = function() {
+        const container = document.getElementById('educationContainer');
+        const div = document.createElement('div');
+        div.className = 'education-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Degree</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY – YYYY</span>
+          </div>
+          <div class="item-subtitle" contenteditable="true" spellcheck="false">School</div>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      window.addProject = function() {
+        const container = document.getElementById('projectsContainer');
+        const div = document.createElement('div');
+        div.className = 'project-item';
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-title" contenteditable="true" spellcheck="false">Project Name</span>
+            <span class="item-date" contenteditable="true" spellcheck="false">YYYY</span>
+          </div>
+          <p class="item-description" contenteditable="true" spellcheck="false" data-max-words="80"
+             data-warning="Word limit reached (80 words)">Brief description</p>
+        `;
+        container.appendChild(div);
+        attachListeners();
+        checkOverflow();
+        div.querySelector('.item-title').focus();
+      };
+
+      window.downloadPDF = function() {
+        const element = document.getElementById('resumePage');
+        const opt = {
+          margin: 0,
+          filename: 'dark-resume.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'mm', format: [210, 297], orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        attachListeners();
+        setTimeout(checkOverflow, 100);
+      });
+    })();
+  </script>
+</body>
+</html>

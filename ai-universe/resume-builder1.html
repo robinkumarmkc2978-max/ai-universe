@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Template 1 – Alex Johnson</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #333;
+      padding: 20px;
+      position: relative;
+    }
+    .resume-template-1 {
+      display: flex;
+      max-width: 820px;
+      width: 100%;
+      background: white;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      border: 1px solid #ddd;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: 0.2s;
+      z-index: 10;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    .back-btn:hover {
+      background: #f5f5f5;
+    }
+    .sidebar {
+      width: 280px;
+      background: #f8f9fc;
+      padding: 40px 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-right: 1px solid #e9ecf2;
+    }
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #d9dce6;
+      margin-bottom: 18px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="25" fill="%23b0b8c9"/><ellipse cx="50" cy="90" rx="45" ry="25" fill="%23b0b8c9"/></svg>');
+      background-size: cover;
+      background-position: center;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: 0.2s;
+    }
+    .profile-photo:hover::after {
+      content: "📷";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.8rem;
+      background: rgba(0,0,0,0.3);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .sidebar .name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1f36;
+      margin-bottom: 4px;
+      letter-spacing: -0.3px;
+      outline: none;
+      border-radius: 4px;
+      padding: 2px 4px;
+      min-width: 50px;
+    }
+    .sidebar .name:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .sidebar .job-title {
+      font-size: 0.9rem;
+      color: #5c5f70;
+      margin-bottom: 24px;
+      font-weight: 500;
+      background: #eef0f7;
+      padding: 4px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      outline: none;
+      min-width: 60px;
+    }
+    .sidebar .job-title:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .contact-info {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .contact-info p {
+      font-size: 0.8rem;
+      color: #4a4d5e;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-info p span {
+      outline: none;
+      border-radius: 3px;
+      padding: 1px 3px;
+      flex: 1;
+    }
+    .contact-info p span:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .contact-info i {
+      width: 16px;
+      color: #5c5f70;
+      font-size: 0.8rem;
+    }
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1a1f36;
+      margin-bottom: 14px;
+      width: 100%;
+      text-align: left;
+      border-bottom: 2px solid #dfe2ec;
+      padding-bottom: 6px;
+    }
+    .skills-list, .languages-list {
+      list-style: none;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+    .skills-list li, .languages-list li {
+      font-size: 0.8rem;
+      color: #4a4d5e;
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+      border-radius: 3px;
+    }
+    .skills-list li:focus, .languages-list li:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .skills-list li::before {
+      content: "▹";
+      color: #7c8ba0;
+      font-size: 0.9rem;
+      margin-right: 4px;
+    }
+    .languages-list li {
+      justify-content: space-between;
+    }
+    .languages-list li span:last-child {
+      color: #888b9c;
+      font-size: 0.7rem;
+    }
+    .add-btn {
+      background: none;
+      border: 1px dashed #b0b8c9;
+      color: #5c5f70;
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 4px;
+      display: inline-block;
+      transition: 0.2s;
+      align-self: flex-start;
+    }
+    .add-btn:hover {
+      background: #eef0f7;
+      border-color: #7c8ba0;
+    }
+    .main-content {
+      flex: 1;
+      padding: 40px 35px;
+    }
+    .main-content .section {
+      margin-bottom: 30px;
+    }
+    .main-content .section-title {
+      margin-bottom: 14px;
+    }
+    .about-text {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #4a4d5e;
+      margin-bottom: 14px;
+      outline: none;
+      border-radius: 4px;
+      padding: 4px;
+      min-height: 60px;
+    }
+    .about-text:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .experience-item {
+      margin-bottom: 22px;
+    }
+    .experience-item .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .experience-item .job-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1a1f36;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .experience-item .job-title:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .experience-item .company {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #5c5f70;
+      margin-bottom: 4px;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .experience-item .company:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .experience-item .date {
+      font-size: 0.75rem;
+      color: #888b9c;
+      white-space: nowrap;
+      margin-left: 10px;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .experience-item .date:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .experience-item .job-description {
+      font-size: 0.8rem;
+      color: #4a4d5e;
+      line-height: 1.5;
+      outline: none;
+      border-radius: 4px;
+      padding: 4px;
+      min-height: 40px;
+    }
+    .experience-item .job-description:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .education-item {
+      margin-bottom: 16px;
+    }
+    .education-item .degree {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #1a1f36;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .education-item .degree:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .education-item .school {
+      font-size: 0.8rem;
+      color: #5c5f70;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .education-item .school:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .education-item .edu-date {
+      font-size: 0.75rem;
+      color: #888b9c;
+      outline: none;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+    .education-item .edu-date:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .expertise-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .expertise-tag {
+      background: #f0f2f8;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: #4a4d5e;
+      font-weight: 500;
+      outline: none;
+      cursor: text;
+    }
+    .expertise-tag:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #7c8ba0;
+    }
+    .download-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #7c3aed;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+      transition: 0.2s;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .download-btn:hover {
+      background: #6d28d9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(124,58,237,0.4);
+    }
+    @media (max-width: 700px) {
+      .resume-template-1 {
+        flex-direction: column;
+        max-width: 100%;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e9ecf2;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='resume-maker.html'">
+    ← Back
+  </button>
+
+  <div class="resume-template-1" id="resumeContainer">
+    <div class="sidebar">
+      <div class="profile-photo" id="profilePhoto" onclick="document.getElementById('photoUpload').click()">
+        <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+      </div>
+      <h1 class="name" contenteditable="true" spellcheck="false">Alex Johnson</h1>
+      <p class="job-title" contenteditable="true" spellcheck="false">UI Designer</p>
+      
+      <div class="contact-info">
+        <p><i class="fas fa-phone"></i> <span contenteditable="true" spellcheck="false">+1 (555) 123-4567</span></p>
+        <p><i class="fas fa-envelope"></i> <span contenteditable="true" spellcheck="false">alex.johnson@email.com</span></p>
+        <p><i class="fas fa-map-marker-alt"></i> <span contenteditable="true" spellcheck="false">San Francisco, CA</span></p>
+        <p><i class="fas fa-globe"></i> <span contenteditable="true" spellcheck="false">www.alexjohnson.design</span></p>
+      </div>
+      
+      <div class="section-title">Skills</div>
+      <ul class="skills-list" id="skillsList">
+        <li contenteditable="true" spellcheck="false">UI Design</li>
+        <li contenteditable="true" spellcheck="false">UX Research</li>
+        <li contenteditable="true" spellcheck="false">Adobe XD</li>
+        <li contenteditable="true" spellcheck="false">Figma</li>
+        <li contenteditable="true" spellcheck="false">Photoshop</li>
+      </ul>
+      <button class="add-btn" onclick="addSkill()">+ Add Skill</button>
+      
+      <div class="section-title">Languages</div>
+      <ul class="languages-list" id="languagesList">
+        <li contenteditable="true" spellcheck="false">English <span>Native</span></li>
+        <li contenteditable="true" spellcheck="false">Spanish <span>Fluent</span></li>
+      </ul>
+      <button class="add-btn" onclick="addLanguage()">+ Add Language</button>
+    </div>
+    
+    <div class="main-content">
+      <div class="section">
+        <div class="section-title">Profile</div>
+        <p class="about-text" contenteditable="true" spellcheck="false">
+          Creative UI designer with 5+ years of experience designing modern web and mobile interfaces. Skilled in user-centered design, prototyping, and visual communication.
+        </p>
+      </div>
+      
+      <div class="section" id="experienceSection">
+        <div class="section-title">Experience</div>
+        <div class="experience-item">
+          <div class="job-header">
+            <span class="job-title" contenteditable="true" spellcheck="false">Senior UI Designer</span>
+            <span class="date" contenteditable="true" spellcheck="false">2020 – Present</span>
+          </div>
+          <div class="company" contenteditable="true" spellcheck="false">ABC Digital Studio</div>
+          <p class="job-description" contenteditable="true" spellcheck="false">
+            Lead design of responsive web and mobile applications, conducting user research and creating interactive prototypes. Collaborated with developers to ensure pixel-perfect implementation and improved user engagement by 30%.
+          </p>
+        </div>
+        <div class="experience-item">
+          <div class="job-header">
+            <span class="job-title" contenteditable="true" spellcheck="false">UI/UX Designer</span>
+            <span class="date" contenteditable="true" spellcheck="false">2018 – 2020</span>
+          </div>
+          <div class="company" contenteditable="true" spellcheck="false">Creative Solutions Inc.</div>
+          <p class="job-description" contenteditable="true" spellcheck="false">
+            Designed user interfaces for SaaS products, created wireframes, and conducted usability testing. Developed design systems that reduced design-to-development handoff time by 25%.
+          </p>
+        </div>
+      </div>
+      
+      <div class="section" id="educationSection">
+        <div class="section-title">Education</div>
+        <div class="education-item">
+          <div class="degree" contenteditable="true" spellcheck="false">Bachelor of Design</div>
+          <div class="school" contenteditable="true" spellcheck="false">University of California</div>
+          <div class="edu-date" contenteditable="true" spellcheck="false">2016 – 2020</div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <div class="section-title">Expertise</div>
+        <div class="expertise-list" id="expertiseList">
+          <span class="expertise-tag" contenteditable="true" spellcheck="false">Wireframing</span>
+          <span class="expertise-tag" contenteditable="true" spellcheck="false">Prototyping</span>
+          <span class="expertise-tag" contenteditable="true" spellcheck="false">Interaction Design</span>
+          <span class="expertise-tag" contenteditable="true" spellcheck="false">User Testing</span>
+        </div>
+        <button class="add-btn" style="margin-top:8px;" onclick="addExpertise()">+ Add Expertise</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="download-btn" onclick="downloadPDF()">
+    <i class="fas fa-download"></i> Download PDF
+  </button>
+
+  <script>
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('profilePhoto').style.backgroundImage = `url('${e.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function addSkill() {
+      const ul = document.getElementById('skillsList');
+      const li = document.createElement('li');
+      li.setAttribute('contenteditable', 'true');
+      li.setAttribute('spellcheck', 'false');
+      li.textContent = 'New Skill';
+      ul.appendChild(li);
+      li.focus();
+    }
+
+    function addLanguage() {
+      const ul = document.getElementById('languagesList');
+      const li = document.createElement('li');
+      li.setAttribute('contenteditable', 'true');
+      li.setAttribute('spellcheck', 'false');
+      li.innerHTML = 'New Language <span>Level</span>';
+      ul.appendChild(li);
+      li.focus();
+    }
+
+    function addExpertise() {
+      const container = document.getElementById('expertiseList');
+      const span = document.createElement('span');
+      span.className = 'expertise-tag';
+      span.setAttribute('contenteditable', 'true');
+      span.setAttribute('spellcheck', 'false');
+      span.textContent = 'New Skill';
+      container.appendChild(span);
+      span.focus();
+    }
+
+    function downloadPDF() {
+      const element = document.getElementById('resumeContainer');
+      const opt = {
+        margin: 0,
+        filename: 'resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
+</body>
+</html>

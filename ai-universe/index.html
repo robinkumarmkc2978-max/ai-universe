@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AI Universe • Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #a855f7;
+      --bg: #f8f7ff;
+      --card-bg: #ffffff;
+      --text: #1e1b4b;
+      --text-secondary: #6b7280;
+      --border: #e8e5ff;
+      --shadow: 0 2px 12px rgba(124, 58, 237, 0.08);
+      --shadow-hover: 0 8px 24px rgba(124, 58, 237, 0.15);
+    }
+
+    .dark-theme {
+      --bg: #0f0a1a;
+      --card-bg: #1a1025;
+      --text: #e4dcff;
+      --text-secondary: #b4afd4;
+      --border: #2d1f45;
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .top-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      gap: 10px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Hamburger Menu Button */
+    .hamburger-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      background: var(--bg);
+      border: none;
+      font-size: 1.2rem;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .hamburger-btn:hover { background: #ede9fe; color: var(--primary); }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+    }
+
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 8px 14px;
+      gap: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .search-box:hover { border-color: var(--primary-light); background: rgba(124,58,237,0.05); }
+
+    .search-box input {
+      border: none; outline: none; background: transparent;
+      font-family: 'Poppins', sans-serif; font-size: 0.8rem;
+      width: 100%; color: var(--text);
+      cursor: pointer;
+    }
+    .search-box input::placeholder { cursor: pointer; }
+
+    .search-box i { color: var(--text-secondary); font-size: 0.9rem; }
+
+    .icon-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-secondary);
+      text-decoration: none; transition: 0.2s;
+      background: var(--bg); border: none; font-size: 1.1rem;
+    }
+
+    .icon-btn:hover { background: #ede9fe; color: var(--primary); }
+
+    /* Main Content */
+    .main-content {
+      flex: 1; padding: 16px; overflow-y: auto; padding-bottom: 80px;
+    }
+
+    /* AI Chat Hero Card */
+    .hero-card {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 24px; padding: 28px 20px; text-align: center;
+      margin-bottom: 20px; cursor: pointer; text-decoration: none;
+      display: block; transition: 0.3s;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+    }
+
+    .hero-card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124, 58, 237, 0.35); }
+    .hero-card:active { transform: scale(0.98); }
+    .hero-icon { font-size: 3rem; margin-bottom: 10px; }
+    .hero-title { color: white; font-weight: 700; font-size: 1.4rem; }
+    .hero-subtitle { color: rgba(255, 255, 255, 0.85); font-size: 0.8rem; margin-top: 4px; }
+
+    /* Section Title */
+    .section-title { font-weight: 600; font-size: 1rem; margin-bottom: 12px; color: var(--text); }
+
+    /* Tools Grid */
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-bottom: 20px;
+    }
+
+    .tool-card {
+      background: var(--card-bg); border-radius: 18px;
+      padding: 16px 10px; text-align: center;
+      border: 1px solid var(--border); cursor: pointer;
+      text-decoration: none; color: var(--text);
+      transition: 0.2s; box-shadow: var(--shadow);
+    }
+
+    .tool-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--primary-light); }
+    .tool-card:active { transform: scale(0.96); }
+    .tool-emoji { font-size: 1.8rem; margin-bottom: 6px; }
+    .tool-name { font-weight: 600; font-size: 0.75rem; }
+
+    /* AI MODELS / AI TOOLS SECTION */
+    .models-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 10px; margin-bottom: 20px;
+    }
+
+    .model-card {
+      background: var(--card-bg); border-radius: 20px;
+      padding: 18px 12px; text-align: center;
+      border: 1px solid var(--border); cursor: pointer;
+      transition: all 0.25s ease; box-shadow: var(--shadow);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      text-decoration: none; color: inherit;
+    }
+
+    .model-card:hover {
+      transform: translateY(-4px); box-shadow: var(--shadow-hover);
+      border-color: var(--primary-light); background: #fcfaff;
+    }
+
+    .model-icon {
+      font-size: 2.2rem; background: #f5f0ff;
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .model-name { font-weight: 600; font-size: 0.75rem; color: #2d1b5e; }
+
+    .model-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; border: none; padding: 6px 14px;
+      border-radius: 16px; font-weight: 600; cursor: pointer;
+      font-family: 'Poppins', sans-serif; font-size: 0.7rem;
+      transition: 0.25s;
+    }
+
+    .model-btn:hover { box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3); }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px; background: var(--card-bg);
+      border-top: 1px solid var(--border); display: flex;
+      align-items: center; justify-content: space-around;
+      padding: 8px 10px 16px; z-index: 100;
+      border-radius: 20px 20px 0 0; box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-item {
+      color: var(--text-secondary); font-size: 0.65rem;
+      display: flex; flex-direction: column; align-items: center;
+      cursor: pointer; text-decoration: none; gap: 3px; transition: 0.2s;
+    }
+
+    .nav-item i { font-size: 1.2rem; }
+    .nav-item.active { color: var(--primary); font-weight: 600; }
+
+    .voice-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      width: 52px; height: 52px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; margin-top: -20px;
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); color: white;
+      font-size: 1.3rem; cursor: pointer; text-decoration: none;
+      animation: floatMic 2.5s infinite;
+    }
+
+    @keyframes floatMic {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    /* Sidebar (Desktop) */
+    .sidebar { display: none; }
+
+    /* MOBILE SLIDING SIDEBAR */
+    .mobile-sidebar-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5); z-index: 200;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .mobile-sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+    .mobile-sidebar {
+      position: fixed; top: 0; left: 0; width: 50%; max-width: 280px;
+      height: 100%; background: var(--card-bg); z-index: 201;
+      transform: translateX(-100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; padding: 20px 14px;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+      border-right: 1px solid var(--border);
+    }
+    .mobile-sidebar.active { transform: translateX(0); }
+
+    .mobile-sidebar-logo {
+      font-weight: 700; font-size: 1.2rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+    .mobile-sidebar-nav a {
+      padding: 12px 14px; border-radius: 14px; color: var(--text-secondary);
+      text-decoration: none; font-weight: 500; font-size: 0.9rem;
+      transition: 0.2s; display: flex; align-items: center; gap: 10px;
+    }
+    .mobile-sidebar-nav a:hover, .mobile-sidebar-nav a.active { background: #ede9fe; color: var(--primary); }
+
+    .mobile-sidebar-close {
+      position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
+      border-radius: 50%; background: var(--bg); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary); font-size: 1rem;
+    }
+
+    /* ========== SEARCH OVERLAY (NEW) ========== */
+    .search-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 300;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+    }
+    .search-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease;
+    }
+    .search-panel {
+      max-width: 480px;
+      width: 90%;
+      background: var(--card-bg);
+      backdrop-filter: blur(28px);
+      border-radius: 32px;
+      margin-top: 60px;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      transform: translateY(-30px);
+      transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      border: 1px solid var(--border);
+    }
+    .search-overlay.active .search-panel {
+      transform: translateY(0);
+    }
+    .search-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-header h3 {
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .close-search {
+      background: var(--bg);
+      width: 38px;
+      height: 38px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      transition: 0.2s;
+    }
+    .close-search:hover { background: #ede9fe; color: var(--primary); }
+    .search-input-wrapper {
+      background: var(--bg);
+      margin: 20px;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      padding: 8px 18px;
+      gap: 12px;
+      border: 1px solid var(--border);
+    }
+    .search-input-wrapper i { color: var(--primary-light); }
+    #searchOverlayInput {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      padding: 12px 0;
+      background: transparent;
+      font-family: 'Poppins', sans-serif;
+      color: var(--text);
+    }
+    .voice-overlay-btn {
+      background: #f3eeff;
+      padding: 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .search-sections {
+      padding: 0 20px 24px;
+      max-height: 55vh;
+      overflow-y: auto;
+    }
+    .section-label {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--primary);
+      margin: 12px 0 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .chips-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .history-chip, .trend-chip {
+      background: var(--bg);
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid var(--border);
+    }
+    .history-chip:hover, .trend-chip:hover { background: #ede9fe; border-color: var(--primary-light); }
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .result-item {
+      background: var(--bg);
+      border-radius: 24px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid var(--border);
+    }
+    .result-item:active { transform: scale(0.98); }
+    .result-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--card-bg);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .result-info { flex: 1; }
+    .result-title { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+    .result-desc { font-size: 0.65rem; color: var(--text-secondary); }
+    .empty-results { text-align: center; padding: 32px; color: var(--text-secondary); }
+
+    @media screen and (min-width: 1024px) {
+      .app-container { max-width: 1200px; flex-direction: row; }
+      .sidebar {
+        display: flex; flex-direction: column; width: 240px;
+        background: var(--card-bg); border-right: 1px solid var(--border);
+        padding: 20px 14px; position: sticky; top: 0; height: 100vh;
+      }
+      .sidebar-logo {
+        font-weight: 700; font-size: 1.4rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        margin-bottom: 24px; text-align: center;
+      }
+      .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+      .sidebar-nav a {
+        padding: 12px 16px; border-radius: 14px; color: var(--text-secondary);
+        text-decoration: none; font-weight: 500; font-size: 0.9rem;
+        transition: 0.2s; display: flex; align-items: center; gap: 10px;
+      }
+      .sidebar-nav a:hover, .sidebar-nav a.active { background: #ede9fe; color: var(--primary); }
+      .main-content { flex: 1; padding: 24px; }
+      .models-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .bottom-nav { display: none; }
+      .top-header { border-radius: 0; }
+      .hamburger-btn { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🤖 AI Universe</div>
+      <ul class="sidebar-nav">
+        <a href="index.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="chat.html"><i class="fas fa-comments"></i> AI Chat</a>
+        <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+      </ul>
+    </aside>
+
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <header class="top-header">
+        <button class="hamburger-btn" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+        <span class="logo">🤖 AI Universe</span>
+        <div class="search-box" id="searchTrigger">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search AI..." id="searchInput" readonly>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <a href="chat.html" class="hero-card">
+          <div class="hero-icon">💬</div>
+          <div class="hero-title">AI Chat</div>
+          <div class="hero-subtitle">Start a conversation with AI</div>
+        </a>
+
+        <div class="section-title">🧠 AI Models / AI Tools</div>
+        <div class="models-grid">
+          <a href="voice-assistant.html" class="model-card">
+            <div class="model-icon">🎤</div>
+            <div class="model-name">AI Voice Assistant</div>
+            <span class="model-btn">Open Tool</span>
+          </a>
+          <a href="resume-maker.html" class="model-card">
+            <div class="model-icon">📄</div>
+            <div class="model-name">AI Resume Maker</div>
+            <span class="model-btn">Open Tool</span>
+          </a>
+          <a href="aibook.html" class="model-card">
+            <div class="model-icon">📝</div>
+            <div class="model-name">AI Book</div>
+            <span class="model-btn">Open Tool</span>
+          </a>
+          <a href="aiQRcode.html" class="model-card">
+            <div class="model-icon">✨</div>
+            <div class="model-name">AI QRgenerator</div>
+            <span class="model-btn">Open Tool</span>
+          </a>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay"></div>
+  <aside class="mobile-sidebar" id="mobileSidebar">
+    <button class="mobile-sidebar-close" id="mobileSidebarClose"><i class="fas fa-times"></i></button>
+    <div class="mobile-sidebar-logo">🤖 AI Universe</div>
+    <ul class="mobile-sidebar-nav">
+      <a href="index.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="chat.html"><i class="fas fa-comments"></i> AI Chat</a>
+      <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+    </ul>
+  </aside>
+
+  <!-- SEARCH OVERLAY (LIVE SEARCH) -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-panel">
+      <div class="search-header">
+        <h3><i class="fas fa-search"></i> Smart Search</h3>
+        <div class="close-search" id="closeSearchBtn"><i class="fas fa-times"></i></div>
+      </div>
+      <div class="search-input-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchOverlayInput" placeholder="Search AI, resume, books, settings..." autocomplete="off">
+        <div class="voice-overlay-btn" id="voiceOverlayBtn"><i class="fas fa-microphone"></i></div>
+      </div>
+      <div class="search-sections" id="searchContentArea"></div>
+    </div>
+  </div>
+
+  <script>
+    // ======================== COMPREHENSIVE SEARCH DATABASE ========================
+    const SEARCH_DB = [
+      // AI Chat
+      { title: "AI Chat", desc: "Chat with advanced AI assistant", icon: "💬", url: "chat.html", keywords: ["ai chat","chatbot","assistant","smart ai","conversation","home"] },
+      { title: "Home", desc: "Dashboard homepage", icon: "🏠", url: "index.html", keywords: ["home","dashboard"] },
+      // Voice Assistant
+      { title: "AI Voice Assistant", desc: "Speak and command with AI voice", icon: "🎤", url: "voice-assistant.html", keywords: ["voice","mic","speak","voice assistant","ai voice","voice chat"] },
+      // Resume Maker Templates
+      { title: "AI Resume Maker", desc: "Create professional resumes", icon: "📄", url: "resume-maker.html", keywords: ["resume","cv","job resume"] },
+      { title: "Modern Resume", desc: "Clean minimal design", icon: "✨", url: "resume-modern.html", keywords: ["modern resume","modern"] },
+      { title: "Professional Resume", desc: "Corporate style", icon: "💼", url: "resume-professional.html", keywords: ["professional resume","professional"] },
+      { title: "Minimal Resume", desc: "Simple elegant", icon: "🎨", url: "resume-minimal.html", keywords: ["minimal resume","minimal"] },
+      { title: "Sidebar Resume", desc: "Two column layout", icon: "📑", url: "resume-sidebar.html", keywords: ["sidebar resume","sidebar"] },
+      { title: "Creative Resume", desc: "Artistic design", icon: "🖌️", url: "resume-creative.html", keywords: ["creative resume","creative"] },
+      { title: "Dark Resume", desc: "Night mode template", icon: "🌙", url: "resume-dark.html", keywords: ["dark resume","dark"] },
+      { title: "Corporate Resume", desc: "Business standard", icon: "🏢", url: "resume-corporate.html", keywords: ["corporate resume","corporate"] },
+      { title: "Elegant Resume", desc: "Sophisticated style", icon: "💎", url: "resume-elegant.html", keywords: ["elegant resume","elegant"] },
+      { title: "Executive Resume", desc: "Leadership profile", icon: "👔", url: "resume-executive.html", keywords: ["executive resume","executive"] },
+      { title: "Tech Resume", desc: "For developers", icon: "💻", url: "resume-tech.html", keywords: ["tech resume","tech"] },
+      // Books Section
+      { title: "AI Book Hub", desc: "NCERT textbooks & resources", icon: "📚", url: "aibook.html", keywords: ["books","ncert","textbook"] },
+      { title: "Class 8 Science", desc: "NCERT Science", icon: "🔬", url: "book-science8.html", keywords: ["class 8","class8 science","science"] },
+      { title: "Class 9 Math", desc: "NCERT Mathematics", icon: "📐", url: "book-math9.html", keywords: ["class 9","class9 math","math"] },
+      { title: "Class 10 English", desc: "First Flight", icon: "📖", url: "book-english10.html", keywords: ["class 10","class10 english","english"] },
+      { title: "Class 11 Geography", desc: "Physical Geography", icon: "🌍", url: "book-geography11.html", keywords: ["class 11","geography"] },
+      { title: "Class 12 Computer", desc: "Python & DBMS", icon: "💾", url: "book-cs12.html", keywords: ["class 12","computer"] },
+      { title: "Class 8 Math", desc: "Mathematics", icon: "📘", url: "book-math8.html", keywords: ["class 8 math"] },
+      { title: "Class 9 Science", desc: "Physics, Chem, Bio", icon: "⚛️", url: "book-science9.html", keywords: ["class 9 science"] },
+      { title: "Class 10 Social Science", desc: "History, Civics", icon: "🏛️", url: "book-sst10.html", keywords: ["class 10 social","history"] },
+      { title: "Class 12 Physics", desc: "Electricity & Modern", icon: "⚡", url: "book-physics12.html", keywords: ["class 12 physics"] },
+      { title: "Class 11 Hindi", desc: "Aroh & Vitan", icon: "🇮🇳", url: "book-hindi11.html", keywords: ["class 11 hindi","hindi"] },
+      // QR & Tools
+      { title: "AI QR Generator", desc: "Create QR codes instantly", icon: "📲", url: "aiQRcode.html", keywords: ["qr","qr code","scanner","generate qr","barcode"] },
+      // Settings & Others
+      { title: "Settings", desc: "Account & preferences", icon: "⚙️", url: "settings.html", keywords: ["settings","profile","security","dark mode","notifications","password","fingerprint"] },
+      { title: "Feedback", desc: "Send suggestions", icon: "📢", url: "feedback.html", keywords: ["feedback","support","contact","report"] },
+      { title: "History", desc: "Your activity log", icon: "🕘", url: "history.html", keywords: ["history","recent","activity","favorites"] }
+    ];
+
+    const TRENDING = ["ai chat", "resume", "class 10 english", "qr code", "voice assistant"];
+
+    let recentSearches = [];
+    function loadRecent() { const stored = localStorage.getItem("ai_search_recent"); if(stored) recentSearches = JSON.parse(stored); else recentSearches = []; }
+    function saveRecent() { localStorage.setItem("ai_search_recent", JSON.stringify(recentSearches.slice(0, 6))); }
+    function addRecentSearch(q) { if(!q.trim()) return; q = q.trim().toLowerCase(); recentSearches = recentSearches.filter(s => s !== q); recentSearches.unshift(q); if(recentSearches.length > 6) recentSearches.pop(); saveRecent(); }
+    function clearHistory() { recentSearches = []; saveRecent(); renderOverlayContent(""); }
+
+    function performSearch(query) {
+      if(!query.trim()) return [];
+      const lower = query.toLowerCase().trim();
+      return SEARCH_DB.filter(item => item.title.toLowerCase().includes(lower) || item.keywords.some(kw => kw.toLowerCase().includes(lower)));
+    }
+
+    function renderOverlayContent(query) {
+      const contentDiv = document.getElementById("searchContentArea");
+      if(!contentDiv) return;
+      const results = performSearch(query);
+      const hasQuery = query && query.trim() !== "";
+      if(!hasQuery) {
+        contentDiv.innerHTML = `
+          <div class="section-label"><span><i class="fas fa-history"></i> Recent</span><button class="clear-history-btn" style="background:none;border:none;color:#f97316;font-size:0.7rem;cursor:pointer;" id="clearRecentBtn">Clear all</button></div>
+          <div class="chips-list" id="recentList">${recentSearches.map(t => `<span class="history-chip" data-term="${t}">${t}</span>`).join('') || '<span style="font-size:0.7rem;">No recent searches</span>'}</div>
+          <div class="section-label"><i class="fas fa-fire"></i> Trending</div>
+          <div class="chips-list" id="trendingList">${TRENDING.map(t => `<span class="trend-chip" data-term="${t}">🔥 ${t}</span>`).join('')}</div>
+          <div class="section-label"><i class="fas fa-compass"></i> Quick suggestions</div>
+          <div class="results-list">${SEARCH_DB.slice(0,4).map(item => `<div class="result-item" data-url="${item.url}"><div class="result-icon">${item.icon}</div><div class="result-info"><div class="result-title">${item.title}</div><div class="result-desc">${item.desc}</div></div></div>`).join('')}</div>
+        `;
+        attachChipEvents(); attachResultEvents();
+        const clearBtn = document.getElementById("clearRecentBtn"); if(clearBtn) clearBtn.onclick = () => clearHistory();
+      } else {
+        if(results.length === 0) contentDiv.innerHTML = `<div class="empty-results"><i class="fas fa-search fa-2x"></i><p>No results for "${query}"</p></div>`;
+        else contentDiv.innerHTML = `<div class="section-label">✨ ${results.length} results found</div><div class="results-list">${results.map(item => `<div class="result-item" data-url="${item.url}"><div class="result-icon">${item.icon}</div><div class="result-info"><div class="result-title">${item.title}</div><div class="result-desc">${item.desc}</div></div></div>`).join('')}</div>`;
+        attachResultEvents();
+      }
+    }
+
+    function attachChipEvents() {
+      document.querySelectorAll('.history-chip, .trend-chip').forEach(chip => {
+        chip.addEventListener('click', () => { const term = chip.dataset.term; if(term) { document.getElementById("searchOverlayInput").value = term; renderOverlayContent(term); addRecentSearch(term); } });
+      });
+    }
+    function attachResultEvents() {
+      document.querySelectorAll('.result-item').forEach(item => { item.addEventListener('click', () => { const url = item.dataset.url; if(url) window.location.href = url; }); });
+    }
+
+    function startVoiceSearch() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert("Voice search not supported"); return; }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.start();
+      recognition.onresult = (event) => { const transcript = event.results[0][0].transcript; document.getElementById("searchOverlayInput").value = transcript; renderOverlayContent(transcript); addRecentSearch(transcript); };
+    }
+
+    // Overlay logic
+    const overlay = document.getElementById("searchOverlay");
+    const searchTrigger = document.getElementById("searchTrigger");
+    const closeBtn = document.getElementById("closeSearchBtn");
+    const overlayInput = document.getElementById("searchOverlayInput");
+    const voiceBtn = document.getElementById("voiceOverlayBtn");
+
+    function openOverlay() { overlay.classList.add("active"); overlayInput.value = ""; renderOverlayContent(""); setTimeout(() => overlayInput.focus(), 100); }
+    function closeOverlay() { overlay.classList.remove("active"); }
+    searchTrigger.addEventListener("click", openOverlay);
+    closeBtn.addEventListener("click", closeOverlay);
+    overlay.addEventListener("click", (e) => { if(e.target === overlay) closeOverlay(); });
+    overlayInput.addEventListener("input", (e) => { const val = e.target.value; renderOverlayContent(val); if(val.trim()) addRecentSearch(val); });
+    voiceBtn.addEventListener("click", startVoiceSearch);
+
+    // Sidebar logic
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileSidebar = document.getElementById('mobileSidebar');
+    const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
+    const mobileSidebarClose = document.getElementById('mobileSidebarClose');
+    function openSidebar() { mobileSidebar.classList.add('active'); mobileSidebarOverlay.classList.add('active'); }
+    function closeSidebarFunc() { mobileSidebar.classList.remove('active'); mobileSidebarOverlay.classList.remove('active'); }
+    hamburgerBtn.addEventListener('click', openSidebar);
+    mobileSidebarClose.addEventListener('click', closeSidebarFunc);
+    mobileSidebarOverlay.addEventListener('click', closeSidebarFunc);
+
+    const theme = JSON.parse(localStorage.getItem('aiUniverseTheme') || '{}');
+    if (theme.dark) document.body.classList.add('dark-theme');
+    loadRecent();
+  </script>
+</body>
+</html>
